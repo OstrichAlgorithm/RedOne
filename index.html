@@ -6,17 +6,41 @@
 	</head>
 	<body>
 		
+		<p>微信那只浏览器不支持，点左上角其他浏览器打开吧，- -浏览器兼容情况不知</p>
+		<p>请输入字符：<input type="text" id="num" value="1"/>请上传图片：<input type="file" id="up-button"/></p>
+		<p>圆大小：<input type="range" name="points" min="40" max="200" id='circleSize'/>
+			<div id="circleText">50</div>
+		</p>
+		<p>圆的位置：X:<input type="range" name="points" min="1" max="1000" id='circleX'/>
+		Y:<input type="range" name="points" min="1" max="1000" id='circleY'/>
+		</p>
+		<p>字体大小：<input type="range" name="points" min="20" max="400" id='fontSize'/>
+			<div id= "fontText"></div>
+		</p>
 		
-		请上传图片：<input type="file" id="up-button"/>
+		<p>字的位置：X:<input type="range" name="points" min="100" max="950" id='textX'/>
+		Y:<input type="range" name="points" min="100" max="900" id='textY'/>
 		
-		请输入数字：<input type="text" id="num" value="1"/>
+		</p>
+		<p>生成:<input onclick="saveAsLocalImage()" type="button" value="点击后保存下面图片"/></p>
+		
+		
+		
+		
+		
+		
+		
+		
 		<canvas id="cv" width="400" height="400">
 			不支持canvas
 		</canvas>
 		
-		生成:<input onclick="saveAsLocalImage()" type="button" value="点击后保存下面图片"/>
+		
 		
 		<img id="imgBox"/>
+		
+		
+		<p><a href="https://github.com/OstrichAlgorithm/RedOne">github</a>兼容什么的orz不知道后面改吧</p>
 		
 	</body>
 	
@@ -30,37 +54,122 @@
 		var numBox = document.getElementById('num');
 		var imgBox = document.getElementById('imgBox');
 		
+		var circleSizeBox =document.getElementById('circleSize');
+		var circleTextBox = document.getElementById("circleText");
+		var circleXBox = document.getElementById("circleX");
+		var circleYBox = document.getElementById("circleY");
+	
+		var fontSizeBox	= document.getElementById('fontSize');
+		var fontTextBox= document.getElementById('fontText');
+		var fontXBox = document.getElementById("textX");
+		var fontYBox = document.getElementById("textY");
+		
+		
+		
+		var num = numBox.value;
 		var img = new Image();
+		
+		
+		
 		img.src = 'a.jpg';
 		img.onload = init;
 		fileBtn.onchange = getImg;
 		
+		
+		//作为基础衡量单位
+		var r = 1000;
+		var circle = function (){
+			this.r = 10;
+			this.x= 500;
+			this.y = 100;
+		}
+		var fonts = function(){	
+			this.size = 40;
+			this.x = 500;
+			this.y = 100;
+		}
+		
 	
+		//响应滚动条远的大小
+		circleSizeBox.onchange = function (){
+			
+			circle.r=circleSizeBox.value;
+			circleTextBox.innerHTML=circle.r;
+			//alert(circle.r);
+			init();
+		};
+		
+		circleXBox.onchange = function(){
+			circle.x = circleXBox.value;
+			//console.log(circle.x);
+			init();
+		};
+		
+	 	circleYBox.onchange = function(){
+			circle.y = circleYBox.value;
+			//console.log(circle.x);
+			init();
+		};
+		
+		
+		
+		
+		//响应滚动字体的大小
+		fontSizeBox.onchange = function(){
+			fonts.size=fontSizeBox.value;
+			fontTextBox.innerHTML = fonts.size;
+			init();
+		};
+	
+	
+		fontXBox.onchange = function(){
+			fonts.x = fontXBox.value;
+			//console.log(circle.x);
+			init();
+		};
+		
+	 	fontYBox.onchange = function(){
+			fonts.y = fontYBox.value;
+			//console.log(circle.x);
+			init();
+		};
+	
+	
+	
+		
+		
+		
+		
+	
+			numBox.onchange =function(){
+				num = numBox.value;
+				init();
+				
+			};
 	
 		function init(){
-			var num = numBox.value;
+			//var num = numBox.value;
+		
+			
 		  	cv.width = img.width;
     		cv.height = img.height;
 			ctx.drawImage(img,0,0);
 			
-			r = (cv.width<cv.height?cv.width:cv.height)/4;
+			
 			
 			
 			ctx.beginPath(); 
-			ctx.arc(cv.width-r, r, r, 0, Math.PI*2, true); 
+			ctx.arc(circle.x/r*cv.width, circle.y/r*cv.height , circle.r, 0, Math.PI*2, true); 
 			ctx.fillStyle = "#FF0000"; 
 			ctx.fill();
 			
 			
 			ctx.fillStyle = "#ffffff"; 
-			ctx.font=r/2+"px "+"Arial";
-			console.log(ctx.font);
-			ctx.fillText(num, cv.width-6*r/5, 6*r/5); 
+			ctx.font=fonts.size+"px "+"Arial";
+			ctx.fillText(num,fonts.x/r*cv.width, fonts.y/r*cv.height); 
 			
 			
 			
-			var red = convertCanvasToImage(cv);
-			imgBox.src = red;
 			
 		}
 			
@@ -72,11 +181,11 @@
 		    }
 		}
 		
-
+			
 		    function saveAsLocalImage () {
             	
-        		var image = cv.toDataURL("image/png");//.replace("image/png", "image/octet-stream"); 
-        		//window.location.href=image; 
+        		var image = cv.toDataURL("image/png");
+        		 
         		imgBox.width=cv.width;
         		imgBox.height=cv.height;
         		imgBox.src=image;
